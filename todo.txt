@@ -1,0 +1,53 @@
+[x] cargo volume weight avg price
+[x] banking (loans/deposits)
+[ ] sprites (flags + items)
+[ ] storage/warehouses
+[ ] trading rethink
+[ ] ship system rethink
+[ ] weather
+[ ] ship repairs
+[ ] crew rethink
+[ ] piracy
+[ ] items restricted to specific ports for buying (not selling)
+[ ] player saving and loading
+[ ] more sprites
+
+- fix shipwright stores bug 
+
+storage/warehouses:
+player can purchase a warehouse
+store cargo in warehouse
+withdraw from warehouse
+expand warehouse capacity
+multiple warehouses
+
+
+trading rethink:
+goods have different min max ranges depending on location
+i.e. some goods like grain are cheap in alexandria but expensive in genoa
+add a "can_buy" and "can_sell" keys to the goods so not all goods are bought/sold at a city.
+
+
+ship system rethink:
+ships currently are in a dict and are like below:
+"Small Caravel": {"cost": 3000, "capacity": 80, "crew": 30, "cannon": 2, "food": 5, "water": 5}
+food and water dictate how many sailing days a vessel can travel
+crew is required to operate the vessel (can operate at 50 percent)
+capacity represents the cargo capacity of the vessel
+cost is the cost paid to the shipwright to purchase a vessel
+- changes:
+    - add ship "hull" as hitpoints
+    - cargo capacity and hull hp can be increased slightly for $
+    - crew size should dictate sailing times
+    - expand food/water capacity of all vessels slightly
+    - add names for ships?
+    - ability to take more than one ship and form a "fleet"?
+
+
+
+weather:
+weather random events i.e. storms
+damage to ship's hull
+loss of some sailors 
+blow you off course
+delay progress
