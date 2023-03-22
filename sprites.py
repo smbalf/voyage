@@ -10,6 +10,4 @@ def load_images():
         pyxel.image(0).load(x, 0, f"assets/{good.lower()}.png")
         image_positions[good] = x
         x += 16
-    
-    print(image_positions)
 

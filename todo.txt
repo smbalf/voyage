@@ -1,6 +1,6 @@
 [x] cargo volume weight avg price
 [x] banking (loans/deposits)
-[ ] sprites (flags + items)
+[x] sprites (items)
 [ ] storage/warehouses
 [ ] trading rethink
 [ ] ship system rethink
@@ -10,7 +10,7 @@
 [ ] piracy
 [ ] items restricted to specific ports for buying (not selling)
 [ ] player saving and loading
-[ ] more sprites
+[ ] more sprites (ships, pirates, flags, map, etc?)
 
 - fix shipwright stores bug 
 
@@ -44,10 +44,17 @@ cost is the cost paid to the shipwright to purchase a vessel
     - ability to take more than one ship and form a "fleet"?
 
 
-
 weather:
 weather random events i.e. storms
 damage to ship's hull
 loss of some sailors 
 blow you off course
 delay progress
+
+
+
+Trip booking - a booking invoice for each part of your journey to show your travel dates,
+details of the cost of the trip, booking date and names of all the travellers.
+Confirmation of cancellation - a dated cancellation invoice or no show letter to confirm your
+bookings have been cancelled. Please also provide confirmation of any refunds that may have also
+been given. If you were not refunded for your travel tickets, please send us the original tickets.

@@ -8,6 +8,8 @@ from sprites import image_positions
 market = {}
 
 trading_ui_active = False
+buying_ui_active = False
+selling_ui_active = False
 selected_good = None
 
 def generate_market():
@@ -43,17 +45,19 @@ def market_prices_ui():
     def get_trade(x, y, good):
         global trading_ui_active
         global selected_good
+        global selected_price
         if (
         pyxel.btnp(pyxel.MOUSE_BUTTON_LEFT) and 
         x <= pyxel.mouse_x <= x + 25 and 
         y - 3 <= pyxel.mouse_y <= y + 11):
             trading_ui_active = True
             selected_good = good
+            selected_price = price
 
     for good, price in market.items():
         get_trade(xtrade - 3, ytext - 3, good)
         
-        pyxel.rectb(ximg-1, yimg-1, 21, 18, 0) # image placeholder
+        pyxel.rectb(ximg-2, yimg-1, 21, 18, 0) # image placeholder
         pyxel.text(xgood, ytext, f"{good}", 0) # name of good
         pyxel.text(xprice, ytext, f"{price}", 0) # price of good
         pyxel.blt(ximg, yimg, 0, image_positions[good], 0, 16, 16) #THE IMAGE
@@ -72,12 +76,36 @@ def market_prices_ui():
             yimg = 58
             ytext = 65
 
-def item_trade_ui(good):
+# FACILITATES BUYING AND SELLING OF ITEMS
+def item_trade_ui(good, price):
+    global buying_ui_active
+    global selling_ui_active
     if trading_ui_active:
+        pyxel.rectb(90, 50, 170, 12, 0)
+        pyxel.text(150, 53, "TRADE AGREEMENT", 0)
+        pyxel.text(247, 53, "[X]", 0)  # GIVE THIS FUNCTIONALITY TO CLOSE AND RETURN TO TRADE INTERFACE
         pyxel.rectb(90, 62, 170, 153, 0)
-        pyxel.text(100, 70, f"{good}", 0)
+        pyxel.text(100, 70, f"{good.upper()} are hereby exchanged for the \n\nsum of {price} gold.", 0)
+        pyxel.text(100, 100, f"Would you care to buy or sell {good.lower()}?", 0)
+
+        pyxel.rectb(125, 115, 24, 16, 0)
+        pyxel.text(131, 120, "BUY", 0)
+        pyxel.rectb(190, 115, 24, 16, 0)
+        pyxel.text(195, 120, "SELL", 0)
         
 
+        #make some if statement to set buying_ui_active
+        """
+        pyxel.rect(91, 115, 168, 50, 1)
+        pyxel.text(100, 120, f"How many would you like to buy? \n\nYou can afford {int(player['money']/price)}.", 0)
+        # input box for buying 
+        # confirmation
+        
+        """
+        #make some if statement to set selling_ui_active
+
+
+    
 def ship_cargo_ui():
     pyxel.line(10, 226, 348, 226, 0)
     pyxel.rect(150, 219, 53, 10, 1)
@@ -124,8 +152,14 @@ def ship_cargo_ui():
 
 def trading():
     if trading_ui_active:
-        item_trade_ui(selected_good)
+        item_trade_ui(selected_good, selected_price)
         ship_cargo_ui()
+    
+    elif buying_ui_active:
+        pass
+    
+    elif selling_ui_active:
+        pass
     else:
         market_prices_ui()
         ship_cargo_ui()
