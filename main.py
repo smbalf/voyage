@@ -20,7 +20,7 @@ pyxel.colors[1] = WHITE
 
 class App:
     def __init__(self):
-        pyxel.init(360, 340)
+        pyxel.init(360, 340, title="Merchant's Voyage")
         load_images()
 
         pyxel.run(self.update, self.draw)

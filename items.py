@@ -19,3 +19,4 @@ goods = {
     "Gems": {"min": 2105, "max": 3715, "price": 2890},
     "Silk": {"min": 4905, "max": 14015, "price": 12046}
 }
+
