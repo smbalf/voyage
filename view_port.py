@@ -1,10 +1,11 @@
 from trading import trading
 from shipwright import shipwright
-
+from sailing import fleet
 
 interface_draw_functions = {
     'trading': trading,
     'shipwright': shipwright,
+    'fleet': fleet
     # Add more interfaces here
 }
 
