@@ -12,16 +12,18 @@ trading_ui_active = False
 selected_good = None
 
 def generate_market():
+    global market
     for good, price_range in goods.items():
         current_price = price_range["price"]
         if current_price < 50:
-            price_change = random.triangular(-0.3, 0.35, 0.02) * current_price
+            price_change = random.triangular(-0.5, 0.5, 0) * current_price
         else:
-            price_change = random.triangular(-0.15, 0.165, 0.02) * current_price
+            price_change = random.triangular(-0.15, 0.16, 0) * current_price
         new_price = current_price + price_change
         new_price = max(price_range["min"], min(price_range["max"], new_price))
         market[good] = int(new_price)
         price_range["price"] = new_price
+    print(market)
     return market
 
 def get_vwap(good):
@@ -32,7 +34,8 @@ def get_vwap(good):
     return total_cost / total_quantity
 
 def market_prices_ui():
-    pyxel.text(160, 47, "MARKET", 0)
+    pyxel.rect(10, 41, 340, 12, 0)
+    pyxel.text(163, 44, "MARKET", 1)
     # coordinates
     ximg = 22 # image placeholder
     xgood = 50 # name of good

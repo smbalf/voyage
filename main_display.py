@@ -1,14 +1,14 @@
 import pyxel
 from player import player
 from ships import ship_types
+from crew import units
 
 
 player = player
 
-title_bg_width = len(player['location'])*5 if len(player['location']) <= 8 else len(player['location'])*4.4
-flags = {}
 
 def main_display():
+    title_bg_width = len(player['location'])*5 if len(player['location']) <= 8 else len(player['location'])*4.4
 
     # Game border
     pyxel.rectb(0, 0, 360, 380, 0)
@@ -59,3 +59,22 @@ def get_current_hitpoints():
     total_hitpoints = player["hitpoints"]
     max_hitpoints = ship_types[player["ship"]]["hitpoints"]
     return f"{total_hitpoints}/{max_hitpoints}"
+
+def get_crew_stats(player, units):
+    total_attack = 0
+    total_defence = 0
+    total_sailing = 0
+
+    crew_counts = {}
+    for unit_name, unit_count in player['crew'].items():
+        unit_stats = units[unit_name]
+        total_attack += unit_stats['attack'] * unit_count
+        total_defence += unit_stats['defence'] * unit_count
+        total_sailing += unit_stats['sailing'] * unit_count
+        crew_counts[unit_name] = unit_count
+    aggregate_stats = {
+        "Attack": total_attack,
+        "Defence": total_defence,
+        "Sailing": total_sailing,
+    }
+    return crew_counts, aggregate_stats

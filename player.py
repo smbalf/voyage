@@ -8,8 +8,15 @@ player = {
     'loans': {},
     'deposits': {},
     'cargo': {},
-    'crew': {},
+    'crew': {"Novice": 30}, 
     'cannon': 0,
-    'stores': 5,
-    'hitpoints': 100
+    'stores': 100,
+    'hitpoints': 100,
+    'destination': None,
+    'is_sailing': False,
+    'sailing_start_time': None,
+    'sailing_duration': None,
+    'sailing_eta': None,
 }
+
+

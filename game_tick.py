@@ -6,10 +6,8 @@ from player import player
 def game_tick():
     global market
     market = generate_market()
-    
-    #update_daily_interest()
+
+    # update_daily_interest()
+
     player["date"] += timedelta(days=1)
-    player["food"] -= 1
-    player["water"] -= 1
-
-
+    player["stores"] -= 1
