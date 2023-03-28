@@ -5,6 +5,7 @@ from items import goods
 from sprites import image_positions
 from world import game_world
 from global_store import text_input
+from player_saving import save_game
 
 
 trading_ui_active = False
@@ -14,8 +15,11 @@ selected_trade_type = None
 selected_price = None
 
 
+
 def generate_market(goods, price_tier):
+    global market
     market = {}
+    
     for good, qualities in goods.items():
         price_range = qualities[price_tier]
         current_price = price_range["price"]
@@ -28,6 +32,10 @@ def generate_market(goods, price_tier):
         new_price = current_price + price_change
         new_price = max(price_range["min"], min(price_range["max"], new_price))
         price_range["price"] = int(new_price)
+    return market
+
+def get_market():
+    global market
     return market
 
 def get_vwap(good):
@@ -167,9 +175,11 @@ def item_trade_ui(good, quality, trade_type):
                     pyxel.text(153, 183, "SIGN AGREEMENT", 0)
 
                     if pyxel.btnp(pyxel.MOUSE_BUTTON_LEFT) and 150 <= pyxel.mouse_x <= 210 and 180 <=pyxel.mouse_y <= 192:
-                        sell_amount = int(sell_amount)
+                        if sell_amount != "":
+                            sell_amount = int(sell_amount)
                         text_input.reset_typing()
-                        sell_good(good, price, sell_amount)
+                        if isinstance(sell_amount, int):
+                            sell_good(good, price, sell_amount)
             else:
                 pyxel.text(100, 140, "You've nought to sell captain.", 0)
 
@@ -237,6 +247,8 @@ def buy_good(good, price, quantity):
                 player["cargo"][good] = []
             player["cargo"][good].append({"quantity": quantity, "cost": cost})
             trading_ui_active = False
+            save_game(player, market)
+
         else:
             return False
     except (TypeError, ValueError):
@@ -271,3 +283,4 @@ def sell_good(good, price, sell_amount):
         income = original_quantity_to_sell * price  # Use the original quantity_to_sell
         player["money"] += income
         trading_ui_active = False
+        save_game(player, market)

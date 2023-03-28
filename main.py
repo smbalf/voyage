@@ -6,16 +6,15 @@ from global_store import text_input
 from main_display import main_display
 from view_port import GameInterface, interface_draw_functions
 from buttons import buttons
-from items import goods
-from trading import generate_market
 from sprites import load_images
 from sailing import draw_sailing_progress
-from world import game_world
-from player import player
+
+from game_init import initialise_game
+
 os.system('cls')
 
 
-generate_market(goods, game_world[player["location"]]["price_tier"])
+initialise_game()
 
 BLACK = 0x222323
 WHITE = 0xf0f6f0

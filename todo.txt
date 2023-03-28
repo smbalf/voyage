@@ -3,6 +3,7 @@
 [x] sprites (items)
 [x] trading
 [ ] shipwright
+[ ] shipping contracts
 [ ] storage/warehouses
 [ ] trading rethink
 [ ] ship system rethink
@@ -12,11 +13,10 @@
 [ ] piracy
 [ ] market sales system? ("set up" market at port and slowly sell cargo over time)
 [ ] insurance
-[ ] items restricted to specific ports for buying (not selling)
-[ ] player saving and loading
+[x] player saving and loading
 [ ] more sprites (ships, pirates, flags, map, etc?)
-
-- fix shipwright stores bug 
+[ ] player reputation system
+[ ] licenses for items
 
 storage/warehouses:
 player can purchase a warehouse
@@ -54,3 +54,57 @@ damage to ship's hull
 loss of some sailors 
 blow you off course
 delay progress
+
+
+
+port tiers:
+high:
+        Genoa
+        Barcelona
+        Venice
+        Constantinople
+        Lisbon
+        London
+        Lubeck
+med:
+        Cagliari
+        Roma
+        Marseille
+        Valencia
+        Palma
+        Cadiz
+        Siracusa
+        Malta
+        Taranto
+        Durres
+        Ragusa
+        Ancona
+        Corfu
+        Kalamata
+        Athens
+        Thessaloniki
+        Smyrna
+        Heraklion
+        Rhodes
+        Famagusta
+        Tortosa
+        Trebizond
+        Santiago
+        Bordeaux
+        Southampthon
+        Nantes
+        Amsterdam
+        Bruges
+        Danzig
+low:
+        Algiers
+        Tunis
+        Tripoli
+        Benghazi
+        Side
+        Antioch
+        Acre
+        Alexandria
+        Caffa
+        Riga
+        Novgorod

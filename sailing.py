@@ -7,7 +7,8 @@ from player import player
 from ships import ship_types
 from crew import units
 from main_display import get_crew_stats
-
+from trading import get_market
+from player_saving import save_game
 
 price = random.randint(1, 5)
 
@@ -140,6 +141,7 @@ def buy_stores(quantity):
     if player["money"] >= cost and (quantity + current_stores) <= max_stores:
         player["money"] -= cost
         player["stores"] += quantity
+        save_game(player, market=get_market())
 
 def hire_crew(selected_unit):
     max_crew = ship_types[player["ship"]]["crew"]
@@ -149,6 +151,7 @@ def hire_crew(selected_unit):
     if player["money"] >= cost and (current_crew + 1) <= max_crew:
             player["money"] -= cost
             player["crew"][selected_unit] = player["crew"].get(selected_unit, 0) + 1
+            save_game(player, market=get_market())
 
 def fire_crew(selected_unit):
     min_crew = 0
@@ -159,6 +162,7 @@ def fire_crew(selected_unit):
         
         if player["crew"][selected_unit] == 0:
             del player["crew"][selected_unit]
+            save_game(player, market=get_market())
 
 def get_nearest_ports():
     distances = game_world[player["location"]]["nearby_ports"]
@@ -194,13 +198,15 @@ def display_ports_ui():
                 pass
         ytext+=20
 
+
+SET_TIME = 15
 def set_sail(port, distance):
-    time_factor = 30 * 4
+    time_factor = SET_TIME * 4
     player["destination"] = port
     player["is_sailing"] = True
     player["sailing_start_time"] = pyxel.frame_count
     player["sailing_duration"] = distance * time_factor
-    player["sailing_eta"] = player["sailing_duration"] // 30
+    player["sailing_eta"] = player["sailing_duration"] // SET_TIME
     player["sailing_days"] = distance
 
 def draw_sailing_progress():
@@ -209,11 +215,11 @@ def draw_sailing_progress():
     if player["is_sailing"]:
         elapsed_time = pyxel.frame_count - player["sailing_start_time"]
         progress = min(300 * elapsed_time / player["sailing_duration"], 300)
-        eta_seconds = max(0, player["sailing_eta"] - elapsed_time // 30)
-        day_in_secs = player["sailing_eta"] // (player["sailing_duration"]/30/4)
+        eta_seconds = max(0, player["sailing_eta"] - elapsed_time // SET_TIME)
+        day_in_secs = player["sailing_eta"] // (player["sailing_duration"]/SET_TIME/4)
 
         if 'next_game_tick_time' not in player:
-            player['next_game_tick_time'] = player["sailing_start_time"] + day_in_secs * 30
+            player['next_game_tick_time'] = player["sailing_start_time"] + day_in_secs * SET_TIME
         
         pyxel.rect(29, 312, 200, 10, 1)
         pyxel.text(30, 315, f"Sailing from {port.upper()} to {destination.upper()}. ETA: {eta_seconds} seconds.", 0)
@@ -221,13 +227,13 @@ def draw_sailing_progress():
 
         if pyxel.frame_count >= player['next_game_tick_time']:
             game_tick()
-            player['next_game_tick_time'] += day_in_secs * 30
+            player['next_game_tick_time'] += day_in_secs * SET_TIME
 
         if elapsed_time >= player["sailing_duration"]:
             player["is_sailing"] = False
             player["location"] = player["destination"]
             del player['next_game_tick_time']
-
+            save_game(player, market=get_market())
 
 def progress_bar():
     pyxel.rectb(29, 325, 300, 12, 0)
