@@ -45,11 +45,12 @@ class App:
         pyxel.cls(1)
         main_display()
         buttons()
-        draw_sailing_progress()
+
 
         if GameInterface.current_interface:
             interface_draw_functions[GameInterface.current_interface]()
-
+            if GameInterface.current_interface == 'fleet':
+                draw_sailing_progress()
         pyxel.text(320, 372, f"{pyxel.mouse_x}, {pyxel.mouse_y}", 0)
         pyxel.mouse(visible=True)
 App()

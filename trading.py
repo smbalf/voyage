@@ -208,40 +208,43 @@ def trading():
         ship_cargo_ui()
 
 def buy_good(good, price, quantity):
+    global trading_ui_active
     cost = quantity * price
     if player["money"] >= cost:
         player["money"] -= cost
         if good not in player["cargo"]:
             player["cargo"][good] = []
         player["cargo"][good].append({"quantity": quantity, "cost": cost})
+        trading_ui_active = False
     else:
         return False
 
 def sell_good(good, price, sell_amount):
+    global trading_ui_active
     cargo_data = player["cargo"][good]
     total_quantity = sum(transaction["quantity"] for transaction in cargo_data)
     transactions = cargo_data
 
     if total_quantity >= sell_amount:
-            remaining_quantity = total_quantity - sell_amount
-            original_quantity_to_sell = sell_amount  # Store the original quantity_to_sell
+        remaining_quantity = total_quantity - sell_amount
+        original_quantity_to_sell = sell_amount  # Store the original quantity_to_sell
 
-            # Remove transactions until the remaining quantity is accounted for
-            while sell_amount > 0:
-                transaction = transactions[0]
-                if transaction["quantity"] <= sell_amount:
-                    sell_amount -= transaction["quantity"]
-                    transactions.pop(0)
-                else:
-                    transaction["quantity"] -= sell_amount
-                    transaction["cost"] -= sell_amount * transaction["cost"] / (transaction["quantity"] + sell_amount)
-                    sell_amount = 0
+        # Remove transactions until the remaining quantity is accounted for
+        while sell_amount > 0:
+            transaction = transactions[0]
+            if transaction["quantity"] <= sell_amount:
+                sell_amount -= transaction["quantity"]
+                transactions.pop(0)
+            else:
+                transaction["quantity"] -= sell_amount
+                transaction["cost"] -= sell_amount * transaction["cost"] / (transaction["quantity"] + sell_amount)
+                sell_amount = 0
 
-            # Update the player's cargo
-            player["cargo"][good] = transactions  # Update with remaining transactions
+        # Update the player's cargo
+        player["cargo"][good] = transactions  # Update with remaining transactions
 
-            if remaining_quantity == 0:
-                del player["cargo"][good]
-            income = original_quantity_to_sell * price  # Use the original quantity_to_sell
-            player["money"] += income
-
+        if remaining_quantity == 0:
+            del player["cargo"][good]
+        income = original_quantity_to_sell * price  # Use the original quantity_to_sell
+        player["money"] += income
+        trading_ui_active = False
