@@ -1,11 +1,13 @@
 from datetime import timedelta
-from trading import market, generate_market
+from trading import generate_market
+from items import goods
 from player import player
+from world import game_world
 #from banking import update_daily_interest
 
 def game_tick():
-    global market
-    market = generate_market()
+    tier = game_world[player["location"]]["price_tier"]
+    generate_market(goods, tier)
 
     # update_daily_interest()
 

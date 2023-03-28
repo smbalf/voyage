@@ -161,7 +161,7 @@ def fire_crew(selected_unit):
             del player["crew"][selected_unit]
 
 def get_nearest_ports():
-    distances = game_world[player["location"]]
+    distances = game_world[player["location"]]["nearby_ports"]
     sorted_distances = sorted(distances.items(), key=lambda x: x[1])
     nearest_ports = {port: distance for port, distance in sorted_distances}
     return nearest_ports

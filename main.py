@@ -1,19 +1,21 @@
 import pyxel
 import os
 
+from global_store import text_input
+
 from main_display import main_display
 from view_port import GameInterface, interface_draw_functions
 from buttons import buttons
+from items import goods
 from trading import generate_market
 from sprites import load_images
-from player_keylogging import PlayerKeys as p
-from player_keylogging import CAPTION
 from sailing import draw_sailing_progress
+from world import game_world
+from player import player
 os.system('cls')
 
 
-generate_market()
-
+generate_market(goods, game_world[player["location"]]["price_tier"])
 
 BLACK = 0x222323
 WHITE = 0xf0f6f0
@@ -27,25 +29,22 @@ pyxel.colors[2] = BLUE
 pyxel.colors[3] = ORANGE
 pyxel.colors[4] = RED
 
-title = CAPTION
 
 class App:
     def __init__(self):
-        pyxel.init(360, 380, title=title)
+        pyxel.init(360, 380, title="Merchant's Voyage")
         load_images()
-        p.register_key_listeners()
-
+        global text_input
+        self.text_input = text_input
         pyxel.run(self.update, self.draw)
 
-    def update(self):
-        if pyxel.btnp(pyxel.KEY_Q):
-            pyxel.quit() 
+    def update(self):      
+        self.text_input.update()
 
     def draw(self):
         pyxel.cls(1)
         main_display()
         buttons()
-
 
         if GameInterface.current_interface:
             interface_draw_functions[GameInterface.current_interface]()

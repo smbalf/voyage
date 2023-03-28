@@ -390,6 +390,8 @@ game_world = {
     }
 }
 
+
+"""
 nearby_ports = {
     "Genoa":            {"map_x": 165, "map_y": 194},
     "Cagliari":         {"map_x": 162, "map_y": 246},
@@ -426,3 +428,4 @@ nearby_ports = {
     "Alexandria":       {"map_x": 298, "map_y": 329},
 }
 
+"""

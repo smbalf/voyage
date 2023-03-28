@@ -3,27 +3,31 @@ import random
 from player import player
 from items import goods
 from sprites import image_positions
-from player_keylogging import PlayerKeys as p
+from world import game_world
+from global_store import text_input
 
-
-market = {}
 
 trading_ui_active = False
 selected_good = None
+selected_quality = None
+selected_trade_type = None
+selected_price = None
 
-def generate_market():
-    global market
-    for good, price_range in goods.items():
+
+def generate_market(goods, price_tier):
+    market = {}
+    for good, qualities in goods.items():
+        price_range = qualities[price_tier]
         current_price = price_range["price"]
-        if current_price < 50:
-            price_change = random.triangular(-0.5, 0.5, 0) * current_price
+        if current_price < 40:
+            price_change = random.triangular(-5, 5, 0)
+        elif 41 < current_price < 100:
+            price_change = random.triangular(-0.1, 0.1, 0) * current_price
         else:
-            price_change = random.triangular(-0.15, 0.16, 0) * current_price
+            price_change = random.triangular(-0.05, 0.05, 0) * current_price
         new_price = current_price + price_change
         new_price = max(price_range["min"], min(price_range["max"], new_price))
-        market[good] = int(new_price)
-        price_range["price"] = new_price
-    print(market)
+        price_range["price"] = int(new_price)
     return market
 
 def get_vwap(good):
@@ -33,7 +37,13 @@ def get_vwap(good):
     total_quantity = sum(transaction["quantity"] for transaction in player["cargo"][good])
     return total_cost / total_quantity
 
+def get_market_price(good, location):
+    price_tier = game_world[location]['price_tier']
+    return goods[good][price_tier]['price']
+
+
 def market_prices_ui():
+    location = player['location']
     pyxel.rect(10, 41, 340, 12, 0)
     pyxel.text(163, 44, "MARKET", 1)
     # coordinates
@@ -45,10 +55,10 @@ def market_prices_ui():
     yimg = 58 # ycoord of image
     ytext = 65 # ycoord of text
 
-    def get_trade(x, y, good, trade_type):
+    def get_trade(x, y, good, quality, trade_type):
         global trading_ui_active
         global selected_good
-        global selected_price
+        global selected_quality
         global selected_trade_type
         if (
         pyxel.btnp(pyxel.MOUSE_BUTTON_LEFT) and 
@@ -56,12 +66,14 @@ def market_prices_ui():
         y - 3 <= pyxel.mouse_y <= y + 11):
             trading_ui_active = True
             selected_good = good
-            selected_price = price
+            selected_quality = quality
             selected_trade_type = trade_type
-            item_trade_ui(selected_good, selected_price, selected_trade_type)
+            item_trade_ui(selected_good, selected_quality, selected_trade_type)
     
-    for good, price in market.items():
-        
+    for good, qualities in goods.items():
+        quality = game_world[player["location"]]["price_tier"]
+        price = get_market_price(good, location)
+
         pyxel.rectb(ximg-2, yimg-1, 21, 18, 0) # image placeholder
         pyxel.text(xgood, ytext, f"{good}", 0) # name of good
         pyxel.text(xprice, ytext, f"{price}", 0) # price of good
@@ -69,12 +81,12 @@ def market_prices_ui():
 
         pyxel.rectb(xbuy-3, ytext-3, 25, 11, 0) # buy button borders
         pyxel.text(xbuy+4, ytext, "Buy", 0) # buy button
-        get_trade(xbuy - 3, ytext - 3, good, "buy")
-        
+        get_trade(xbuy - 3, ytext - 3, good, quality, "buy")
+
         pyxel.rectb(xsell-3, ytext-3, 25, 11, 0) # sell button borders
         pyxel.text(xsell+2, ytext, "Sell", 0) # sell button
-        get_trade(xsell - 3, ytext - 3, good, "sell")
-        
+        get_trade(xsell - 3, ytext - 3, good, quality, "sell")
+
         yimg += 20
         ytext += 20
 
@@ -88,9 +100,14 @@ def market_prices_ui():
             ytext = 65
 
 # FACILITATES BUYING AND SELLING OF ITEMS
-def item_trade_ui(good, price, trade_type):
+def item_trade_ui(good, quality, trade_type):
     global trading_ui_active
-    can_buy = int(player['money']/price)
+    global selected_price
+    can_buy = int(player['money']/get_market_price(good, player['location']))
+
+    location = player['location']
+    price = get_market_price(good, location)
+    selected_price = price
 
     if trading_ui_active:
         pyxel.rectb(90, 50, 174, 12, 0)
@@ -107,8 +124,8 @@ def item_trade_ui(good, price, trade_type):
 
         if trade_type == "buy":
             if can_buy > 0:
-                p.typing = True
-                quantity = p.text
+                text_input.typing = True
+                quantity = text_input.text
                 pyxel.text(100, 100, f"You can afford {can_buy}, captain. \n\nHow many would you like to purchase?", 0)
                 pyxel.text(100, 140, "Quantity:", 0)
                 pyxel.text(140, 140, quantity, 0)
@@ -122,8 +139,11 @@ def item_trade_ui(good, price, trade_type):
                 pyxel.text(153, 183, "SIGN AGREEMENT", 0)
 
                 if pyxel.btnp(pyxel.MOUSE_BUTTON_LEFT) and 150 <= pyxel.mouse_x <= 210 and 180 <=pyxel.mouse_y <= 192:
-                    quantity = int(quantity)
-                    p.reset_typing()
+                    try:
+                        quantity = int(quantity)
+                    except ValueError:
+                        pass
+                    text_input.reset_typing()
                     buy_good(good, price, quantity)
             else:
                 pyxel.text(100, 100, f"You can't afford to buy any captain!", 0)
@@ -132,8 +152,8 @@ def item_trade_ui(good, price, trade_type):
             if good in player["cargo"]:
                 quantity = sum(transaction["quantity"] for transaction in player["cargo"][good])
                 if quantity > 0: 
-                    p.typing = True
-                    sell_amount = p.text   
+                    text_input.typing = True
+                    sell_amount = text_input.text
                     pyxel.text(100, 100, f"You have {quantity} to sell, captain. \n\nHow much would you like to sell?", 0)
                     pyxel.text(100, 140, "Quantity:", 0)
                     pyxel.text(140, 140, sell_amount, 0)
@@ -148,7 +168,7 @@ def item_trade_ui(good, price, trade_type):
 
                     if pyxel.btnp(pyxel.MOUSE_BUTTON_LEFT) and 150 <= pyxel.mouse_x <= 210 and 180 <=pyxel.mouse_y <= 192:
                         sell_amount = int(sell_amount)
-                        p.reset_typing()
+                        text_input.reset_typing()
                         sell_good(good, price, sell_amount)
             else:
                 pyxel.text(100, 140, "You've nought to sell captain.", 0)
@@ -210,18 +230,21 @@ def trading():
 def buy_good(good, price, quantity):
     global trading_ui_active
     cost = quantity * price
-    if player["money"] >= cost:
-        player["money"] -= cost
-        if good not in player["cargo"]:
-            player["cargo"][good] = []
-        player["cargo"][good].append({"quantity": quantity, "cost": cost})
-        trading_ui_active = False
-    else:
-        return False
+    try:
+        if player["money"] >= cost:
+            player["money"] -= cost
+            if good not in player["cargo"]:
+                player["cargo"][good] = []
+            player["cargo"][good].append({"quantity": quantity, "cost": cost})
+            trading_ui_active = False
+        else:
+            return False
+    except (TypeError, ValueError):
+        pass
 
 def sell_good(good, price, sell_amount):
     global trading_ui_active
-    cargo_data = player["cargo"][good]
+    cargo_data = [transaction for transaction in player["cargo"][good]]
     total_quantity = sum(transaction["quantity"] for transaction in cargo_data)
     transactions = cargo_data
 
