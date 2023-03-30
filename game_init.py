@@ -4,7 +4,9 @@ from trading import generate_market
 from world import game_world
 from items import goods
 
+
 def initialise_game():
+    global market
     generate_market(goods, game_world[player["location"]]["price_tier"])
 
     loaded_player, loaded_market = load_game()
