@@ -1,60 +1,18 @@
-[x] cargo volume weight avg price
-[x] banking (loans/deposits)
-[x] sprites (items)
-[x] trading
-[ ] shipwright
-[ ] shipping contracts
-[ ] storage/warehouses
-[ ] trading rethink
-[ ] ship system rethink
-[ ] weather
-[ ] ship repairs
-[ ] crew rethink
-[ ] piracy
+[ ] banking (loans/deposits/insurance/ventures - not all cities have banks) 
+[ ] shipwright (repairs to hull, upgrades to rigging/hull/cargo capacity, cannons)
+[ ] shipping contracts (take X amount of Y good to Z port by a specific date)
+[ ] storage/warehouses (build and store goods in different cities - can upgrade)
+[ ] licenses for items (i.e. to unlock trading of the item)
+[ ] change goods from simple gold price to a gold per ton and gold per kilo
+[ ] ship cargo space should be now in tons (item's should have weights for price and storage calcs)
+[ ] ship system rethink (ability to name ships, form ships into a fleet i.e. buy more than 1 ship, increase all stores capacity)
+[ ] weather (damage ship, delay journeys, blow off course, loss of some sailors)
+[ ] crew rethink (have impact on sailing times, fighting capacity)
+[ ] piracy (attack player for loot)
 [ ] market sales system? ("set up" market at port and slowly sell cargo over time)
-[ ] insurance
-[x] player saving and loading
+[x] player saving and loading (double check if pyxel and pickle work together)
 [ ] more sprites (ships, pirates, flags, map, etc?)
-[ ] player reputation system
-[ ] licenses for items
-
-storage/warehouses:
-player can purchase a warehouse
-store cargo in warehouse
-withdraw from warehouse
-expand warehouse capacity
-multiple warehouses
-
-
-trading rethink:
-goods have different min max ranges depending on location
-i.e. some goods like grain are cheap in alexandria but expensive in genoa
-add a "can_buy" and "can_sell" keys to the goods so not all goods are bought/sold at a city.
-
-
-ship system rethink:
-ships currently are in a dict and are like below:
-"Small Caravel": {"cost": 3000, "capacity": 80, "crew": 30, "cannon": 2, "food": 5, "water": 5}
-food and water dictate how many sailing days a vessel can travel
-crew is required to operate the vessel (can operate at 50 percent)
-capacity represents the cargo capacity of the vessel
-cost is the cost paid to the shipwright to purchase a vessel
-- changes:
-    - add ship "hull" as hitpoints
-    - cargo capacity and hull hp can be increased slightly for $
-    - crew size should dictate sailing times
-    - expand food/water capacity of all vessels slightly
-    - add names for ships?
-    - ability to take more than one ship and form a "fleet"?
-
-
-weather:
-weather random events i.e. storms
-damage to ship's hull
-loss of some sailors 
-blow you off course
-delay progress
-
+[ ] player reputation + experience system (reputation, experience:(navigation, trading, sailing, combat, piracy))
 
 
 port tiers:
